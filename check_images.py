@@ -35,26 +35,71 @@ from print_functions_for_lab_checks import *
 def main():
     # TODO: 1. Define start_time to measure total program runtime by
     # collecting start time
-    start_time = time.time()
+    start_time = time()
 
     # TODO: 2. Define get_input_args() function to create & retrieve command
     # line arguments
+    def get_input_args():
+        parser = argparse.ArgumentParser(description='Process to create & retrieve commandline arguments.')
+        parser.add_argument('--dir', type=str, default='pet_images/',
+                            help='path to the folder my_folder')
+        parser.add_argument('--arch', type=str, default='vgg',
+                            help='Chosen model')
+        parser.add_argument('--dogfile', type=str, default='dognames.txt',
+                            help='text file that has dognames')
+        args = parser.parse_args()
+        return args
 
     in_arg = get_input_args()
 
     # TODO: 3. Define get_pet_labels() function to create pet image labels by
     # creating a dictionary with key=filename and value=file label to be used
     # to check the accuracy of the classifier function
+    def get_pet_labels():
+        def clean_file_name(filename):
+            animal_name = ''
+            prefix = filename.lower()
+            for word in prefix.split('_'):
+                if word.isalpha():
+                    animal_name += word + " "
+            return animal_name.strip()
+
+        pet_dict = dict()
+        files = listdir('./pet_images')
+
+        for idx in range(0, len(files), 1):
+            if files[idx] not in pet_dict:
+                stripped = clean_file_name(files[idx])
+                pet_dict[files[idx]] = stripped
+            else:
+                print('Duplicate key', files[idx])
+
     answers_dic = get_pet_labels()
 
     # TODO: 4. Define classify_images() function to create the classifier
     # labels with the classifier function uisng in_arg.arch, comparing the
     # labels, and creating a dictionary of results (result_dic)
+    def classify_images():
+        temp_dict = dict()
+        files = listdir('./pet_images')
+        for idx in range(0, len(files), 1):
+            #      'vgg', 'alexnet', 'resnet'
+            model = "vgg"
+            image_classification = classifier(files[idx], model)
+            temp_dict[image_classification] = files[idx]
+            print(image_classification)
+        return temp_dict
+
     result_dic = classify_images()
 
     # TODO: 5. Define adjust_results4_isadog() function to adjust the results
-    # dictionary(result_dic) to determine if classifier correctly classified
-    # images as 'a dog' or 'not a dog'. This demonstrates if the model can
+    # dictionary(result_dic) to determine if classifier
+
+
+
+
+
+    #   es as 'a dog' or 'not a dog'. This demonstrates if the model can
     # correctly classify dog images as dogs (regardless of breed)
     adjust_results4_isadog()
 
@@ -69,12 +114,12 @@ def main():
 
     # TODO: 1. Define end_time to measure total program runtime
     # by collecting end time
-    end_time = time.time()
+    end_time = time()
 
     # TODO: 1. Define tot_time to computes overall runtime in
     # seconds & prints it in hh:mm:ss format
     time_diff = end_time - start_time
-    hour = int((tot_time / 3600))
+    hour = int((time_diff / 3600))
     minute = int(hour / 60)
     seconds = int(hour % 60)
     tot_time = str(hour) + ":" + str(minute) + ":" + str(seconds)
