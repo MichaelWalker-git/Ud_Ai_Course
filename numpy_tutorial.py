@@ -243,6 +243,6 @@ X = np.ones((4,4)) * np.arange(1,5)
 
 # LAB
 
-Mean normalization will scale the data instead of makeing the alue be between 0 and 1
+# Mean normalization will scale the data instead of makeing the alue be between 0 and 1
 
 
