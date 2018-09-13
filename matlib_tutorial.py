@@ -161,7 +161,19 @@ sb.distplot(df['num_var'], bins=bin_edges, kde=False, hist_kws={'alpha': 1})
 # One of the Figure methods is .add_axes(), which creates a new Axes object in the Figure.
 
 
+# To use Axes objects with seaborn, seaborn functions usually have an "ax" parameter to specify upon which Axes a plot will be drawn.
+
+fig = plt.figure()
+ax = fig.add_axes([.125, .125, .775, .755])
+base_color = sb.color_palette()[0]
+sb.countplot(data = df, x = 'cat_var', color = base_color, ax = ax)
 
 
+# If you don't assign Axes objects as they're created, you can retrieve the current Axes using ax = plt.gca(),
+# or you can get a list of all Axes in a Figure fig by using axes = fig.get_axes().
 
-
+# fig, axes = plt.subplots(3, 4) # grid of 3x4 subplots
+    # axes = axes.flatten() # reshape from 3x4 array into 12-element vector
+    # for i in range(12):
+    #     plt.sca(axes[i]) # set the current Axes
+    #     plt.text(0.5, 0.5, i+1) # print conventional subplot index number to middle of Axes
