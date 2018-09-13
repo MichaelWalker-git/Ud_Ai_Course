@@ -23,6 +23,7 @@ gen_order = pokemon['generation_id'].value_counts().index
 # By default countplot function will summarize and plot the data in terms of absolute frequency (pure counts)
 
 # Relative frequency : height indicates the proportion of data taking each level
+
 # Method one of relative frequency - Relabel the counts axis in terms of proportions
 # get proportion taken by most common group for derivation
 # of tick marks
@@ -86,3 +87,81 @@ for i in range(type_counts.shape[0]):
 na_counts = df.isna().sum()
 base_color = sb.color_palette()[0]
 sb.barplot(na_counts.index.values, na_counts, color = base_color)
+
+
+# The first argument to the function contains the x values (column names)
+# The second is the y values (our counts)
+
+# If your data is not yet summarized, however, just use the countplot function so that you don't need to do extra summarization work
+
+
+################################################## PIE CHARTS ##################################################
+# Fairly limited plot type; Guidelines:
+#     Relative frequencies, areas should represent parts of a whole, rather than measurements on a second variable
+#     Limit the number of slices plotted, pie charts usually works best with 2 or 3 slices
+#     Plot data systematically, plotting a pie chart from 12 clockwise from most to least
+# Bar charts are safer and helps the user better understand
+
+sorted_counts = df['cat_var'].value_counts()
+plt.pie(sorted_counts, labels= sorted_counts.index, startangle=90, counterclock=False);
+plt.axis('square')
+#  Axis makes it so that the scaling of the plot is equal on both the x and y axis
+
+# Donut plot
+sorted_counts = df['cat_var'].value_counts()
+plt.pie(sorted_counts, labels=sorted_counts.index, startangle=90, counterclock=False, wedgeProps ={'width': 0.4});
+plt.axis('square')
+# setting the wedges' width property to less than 1 removes coloring from the center of the circle.
+
+# Histogram - used to plot the distribution of a numberic variable
+# Counts on value ranges, bin size (range)
+
+plt.hist(data = df, x = 'num_var')
+
+# When a data value is on a bin edge, it is counted in the bin to its right.
+# The exception is the rightmost bin edge, which places data values equal to the uppermost limit into the right-most bin (to the upper limit's left).
+
+# By default, the hist function divides the data into 10 bins,
+
+# df['num_var'].describe()) to gauge what minimum and maximum bin limits
+bin_edges = np.arange(0, df['num_var'].max() + 1, 1)
+plt.hist(data=df, x='num_var', bins=bin_edges)
+# arrange - leftmost bin edge
+# second argument is the upper limit
+# third - bin width
+
+# Playing around with bin sizes and find median
+# larger figure size for subplots
+plt.figure(figsize=[10, 5])
+
+# histogram on left, example of too large bin size
+plt.subplit(1,2,1)
+bin_edges = np.arange(0, df['num_var'].max() + 4, 4)
+plt.hist(data=df, x='num_var', bins=bin_edges)
+
+# too small of bin size
+plt.subplot(1,2,2)
+bin_edges = np.arange(0, df['num_var'].max() + 1/4, 1/4)
+plt.hist(data=df, x='num_var', bins=bin_edges)
+
+# The seaborn function distplot
+sb.distplot(df['num_var'])  # first argument must be the Series or array with the points to be plotted
+
+# Pros:
+    # has built-in rules for specifying histogram bins, and by default plots a kernel density estimate (KDE) on top of the data.
+    # The vertical axis is based on the KDE,
+
+bin_edges = np.arange(0, df['num_var'].max() + 1, 1)
+sb.distplot(df['num_var'], bins=bin_edges, kde=False, hist_kws={'alpha': 1})
+
+
+################################################## Figure, axes, subplots ##################################################
+
+# figure() creates a new Figure object, a reference to which has been stored in the variable fig.
+# One of the Figure methods is .add_axes(), which creates a new Axes object in the Figure.
+
+
+
+
+
+
