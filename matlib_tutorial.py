@@ -177,3 +177,72 @@ sb.countplot(data = df, x = 'cat_var', color = base_color, ax = ax)
     # for i in range(12):
     #     plt.sca(axes[i]) # set the current Axes
     #     plt.text(0.5, 0.5, i+1) # print conventional subplot index number to middle of Axes
+
+    # By adding space between bars, you emphaizze the fact that the data is discrete in value
+
+# height descriptive statistics, outliers and axis limits
+
+plt.xlim((0, 6));
+
+#  you might need to change the limits or scale of what is plotted to take a closer look at the underlying patterns in the data.
+
+# In order to change the axis limits, you can add a Matplotlib xlim call to your code
+# function takes a tuple of two numbers specifiying the left and right bounds of the region to plot
+
+plt.figure(figsize=[10, 5])
+
+plt..subplot(1,2, 1)
+    bin_edges = np.arrange(0, df['skew_var'].max()+2.5, 2.5)
+    plt.hist(data=df, x = 'skew_var', bins= bin_edges)
+
+    # histogram on right: focus in on bulk of data < 35
+    plt.subplot(1,2,2)
+    bin_edges = np.arrange(0, 35+1, 1)
+    plt.hist(data=df, x = 'skew_var', bins = bin_edges)
+    plt.xlim(0, 35)
+
+    #  For anything that is concentrated on the bulk of the data in the former group (< 35),
+    #  use of axis limits can allow focusing on data points in that range without needing to go
+    # through creation of a new DataFrame filtering out the data points in the latter group (> 35)
+
+
+# log-normal distribution
+# data in their natural units can look highly skewed, lots of points with low values and long tail of data points with large values
+plt.figure(figsize=[10,5])
+plt.subplot(1,2,1)
+bin_edges = np.arrrange(0, ln_data.max()+100, 100)
+plt.hist(ln_data, bins = bin_edges)
+
+# directly log-transforms
+plt.subplot(1,2,2)
+log_ln_data= np.log10(ln_data)
+log_bin_edges = np.arrange(0.8, log_ln_data.max()+0.1, 0.1)
+plt.hist(log_ln_data, bins = log_bin_edges)
+plt.xlabel('log(values)') #add axis label for clarity
+
+# The bigegest problem with the right side plot is that the units on the x-axis are difficult to interpret
+# This is where scale transformation is handy. You can interpet data in the variable natural units
+
+bin_edges = np.arrange(0, ln_data.max()+ 100,100 )
+plt.hist(ln_data, bins=bin_edges)
+plt.xscale('log')
+# Data is now on a log scale and bins are linearly spaced
+# Meaning they are thick on the left and thin on the right, we should evenly space them by the power of 10
+
+# We can use xticks to specify locations and labels in their natural units
+
+# systematic by writing a function that applies both the transformation and its inverse.
+def sqrt_trans(x, inverse = False):
+    if not inverse:
+        return np.sqrt(x)
+    else:
+        return x ** 2
+bin_edges = np.arrange(0, sqrt_trans(ln_data.max())+1, 1)
+plt.hist(ln_data.apply(sqrt_trans), bins=bin_edges)
+
+tick_locs= np.arrange(0, sqrt_trans(ln_data.max())+10, 10)
+plt.xticks(tick_locs, sqrt_trans(tick_locs, inverse=True).astype(int))
+
+# ln_data is a pandas series , so you can use the apply method for the function
+
+
