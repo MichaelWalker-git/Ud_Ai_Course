@@ -385,15 +385,13 @@ g.plot_marginals(sb.rugplot, height = 0.25)
 # inner = "stick" and inner = "point"
 # to include a swarm plot inside of the violin areas, instead of a box plot.
 
-# plt.figure(figsize = [10, 5])
-# base_color = sb.color_palette()[0]
+plt.figure(figsize = [10, 5])
+base_color = sb.color_palette()[0]
 #
 # # left plot: strip plot
-# plt.subplot(1, 2, 1)
-# ax1 = sb.stripplot(data = df, x = 'num_var', y = 'cat_var',
-#                    color = base_color)
+plt.subplot(1, 2, 1)
+ax1 = sb.stripplot(data = df, x = 'num_var', y = 'cat_var', color = base_color)
 #
 # # right plot: violin plot with inner strip plot as lines
-# plt.subplot(1, 2, 2)
-# sb.violinplot(data = df, x = 'num_var', y = 'cat_var', color = base_color,
-#              inner = 'stick')
+plt.subplot(1, 2, 2)
+sb.violinplot(data = df, x = 'num_var', y = 'cat_var', color = base_color, inner = 'stick')
