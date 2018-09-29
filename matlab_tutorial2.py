@@ -281,3 +281,117 @@ bin_edges = np.arange(-3, df['num_var'].max()+1/3, 1/3)
 g = sb.FacetGrid(data = df, hue = 'cat_var', size = 5)
 g.map(freq_poly, "num_var", bins = bin_edges)
 g.add_legend()
+
+
+# Adding a third variable
+# Using Color for Third Variables
+# One of the most common ways of adding a third variable to a plot in matplotlib and seaborn is through the use of color.
+# The violinplot, boxplot, and barplot functions can all be made with third-variable clusters by adding a "hue" parameter.
+
+# Heat maps can be adapted to depict third variables - hanging the "weights" parameter for hist2d
+
+plt.scatter(data = df, x = 'num_var1', y = 'num_var2', c = 'num_var3')
+plt.colorbar()
+
+#  qualitative variable, you can set different colors for different levels of a categorical variable
+# through the "hue" parameter on seaborn's FacetGrid class.
+g = sb.FacetGrid(data = df, hue = 'cat_var1', size = 5)
+g.map(plt.scatter, 'num_var1', 'num_var2')
+g.add_legend()
+
+# Qualitative palettes are built for nominal-type data.
+# palette should also try and avoid drastic changes in brightness and saturation
+#  that would cause a reader to interpret one category as being more important than the others
+sb.palplot(sb.color_palette(n_colors=9))
+
+# sequential palette, consecutive color values should follow each other systematically.
+# Typically, this follows a light-to-dark trend across a single or small range of hues,
+# where light colors indicate low values and dark colors indicate high values
+sb.palplot(sb.color_palette('viridis', 9))
+
+# diverging palette, two sequential palettes with different hues are put back to back,
+# with a common color (usually white or gray) connecting them. One hue indicates values greater than the center point,
+# while the other indicates values smaller than the center.
+sb.palplot(sb.color_palette('vlag', 9))
+
+#  Seaborn also adds in a number of its own palettes:
+#
+# Qualitative (all up to 6 colors): 'deep', 'pastel', 'dark', 'muted', 'bright', 'colorblind'
+# Sequential: 'rocket' (white-orange-red-purple-black), 'mako' (mint-green-blue-purple-black)
+# Diverging: 'vlag' (blue-white-red), 'icefire' (blue-black-orange)
+
+# FacetGrid through the "palette" parameter,
+# in scatter through the "cmap" parameter.
+
+#  To be safe here, avoid or minimize transparency in plots with color.
+# You may need to plot only a sample of your points in order to make sure that the effect of the third variable is clearly visible.
+
+plt.figure(figsize = [5,5])
+
+# left: qualitative points
+plt.scatter(0,0.5,s = 1e4, c = sb.color_palette()[0], alpha = 0.5)
+plt.scatter(0,-0.5,s = 1e4, c = sb.color_palette()[1], alpha = 0.5)
+
+# right: quantitative points
+plt.scatter(1,0.5,s = 1e4, c = sb.color_palette('Blues')[2], alpha = 0.5)
+plt.scatter(1,-0.5,s = 1e4, c = sb.color_palette('Blues')[4], alpha = 0.5)
+
+# set axes for point overlap
+plt.xlim(-0.5,1.5)
+plt.ylim(-3.5,3.5)
+plt.xticks([])
+plt.yticks([])
+
+#  FacetGrid could be used to subset your dataset across levels of a categorical variable, and then create one plot for each subset.
+g = sb.FacetGrid(data = df, col = 'cat_var2', row = 'cat_var1', size = 2.5,
+                margin_titles = True)
+g.map(plt.scatter, 'num_var1', 'num_var2')
+
+# Swarm Plots
+# Similar to a scatterplot, each data point is plotted with position according to its value on the two variables being plotted.
+# Instead of randomly jittering points as in a normal scatterplot,
+#  points are placed as close to their actual value as possible without allowing any overlap.
+# A swarm plot can be created in seaborn using the swarmplot function, similar to how you would a call violinplot or boxplot
+
+
+plt.figure(figsize = [12, 5])
+base_color = sb.color_palette()[0]
+
+# left plot: violin plot
+plt.subplot(1, 3, 1)
+ax1 = sb.violinplot(data = df, x = 'cat_var', y = 'num_var', color = base_color)
+
+# center plot: box plot
+plt.subplot(1, 3, 2)
+sb.boxplot(data = df, x = 'cat_var', y = 'num_var', color = base_color)
+plt.ylim(ax1.get_ylim()) # set y-axis limits to be same as left plot
+
+# right plot: swarm plot
+plt.subplot(1, 3, 3)
+sb.swarmplot(data = df, x = 'cat_var', y = 'num_var', color = base_color)
+plt.ylim(ax1.get_ylim()) # set y-axis limits to be same as left plot
+# IMPORTANT:  it is only reasonable to use a swarm plot if we have a small or moderate amount of data.
+
+# Rug and Strip Plots
+#  In a rug plot, all of the data points are plotted on a single axis, one tick mark or line for each one
+g = sb.JointGrid(data = df, x = 'num_var1', y = 'num_var2')
+g.plot_joint(plt.scatter)
+g.plot_marginals(sb.rugplot, height = 0.25)
+
+# Seaborn's JointGrid class enables this plotting of bivariate relationship with marginal univariate plots for numeric data.
+# The plot_joint method specifies a plotting function for the main, joint plot for the two variables,
+# while the plot_marginals method specifies the plotting function for the two marginal plots.
+
+# inner = "stick" and inner = "point"
+# to include a swarm plot inside of the violin areas, instead of a box plot.
+
+plt.figure(figsize = [10, 5])
+base_color = sb.color_palette()[0]
+#
+# # left plot: strip plot
+plt.subplot(1, 2, 1)
+ax1 = sb.stripplot(data = df, x = 'num_var', y = 'cat_var', color = base_color)
+#
+# # right plot: violin plot with inner strip plot as lines
+plt.subplot(1, 2, 2)
+sb.violinplot(data = df, x = 'num_var', y = 'cat_var', color = base_color, inner = 'stick')
